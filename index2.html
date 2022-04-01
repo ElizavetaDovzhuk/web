@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 align="center">Сообщения</h1>
+<div align="center">Пользователь 2 - Пользователь 3</div>
+{% for item in message%}
+<div class="col-md6 border rounded">
+    {% if item.user.name  == "Пользователь 2" %}
+        <div class="alert alert-warning" role="alert">
+<div align="left">
+        {{item.content}}
+    </div>
+    </div>
+    <div align="left">
+        {{item.user.name}}, Дата - {{item.created_date}}
+    </div>
+</div>
+ {% else %}
+       <div class="alert alert-success" role="alert">
+<div align="right">
+        {{item.content}}
+    </div>
+    </div>
+
+    <div align="right">
+        {{item.user.name}}, Дата - {{item.created_date}}
+    </div>
+</div>
+ {% endif %}
+
+{% endfor %}
+{% endblock %}
