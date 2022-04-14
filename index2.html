@@ -10,20 +10,24 @@
 <div align="left">
         {{item.content}}
     </div>
-    </div>
+        <img class="img-fluid w-5" src="{{url_for('static', filename='img/mars2.png')}}">
+    <div></div>
     <div align="left">
         {{item.user.name}}, Дата - {{item.created_date}}
     </div>
 </div>
+<div></div>
  {% else %}
        <div class="alert alert-success" role="alert">
 <div align="right">
         {{item.content}}
+        {{item.photo}}
     </div>
-    </div>
-
+        <h3 align="right"><img class="img-fluid w-5"  src="{{url_for('static', filename='img/mars3.png')}}"></h3>
+    <div></div>
     <div align="right">
         {{item.user.name}}, Дата - {{item.created_date}}
+    <div></div>
     </div>
 </div>
  {% endif %}
