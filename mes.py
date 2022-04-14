@@ -13,13 +13,8 @@ class Message(SqlAlchemyBase):
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
 
-    #user_to_name = sqlalchemy.Column(sqlalchemy.Integer,
-                                   #sqlalchemy.ForeignKey("users.name"), index=True, nullable=False)
-    #user_from_id = sqlalchemy.Column(sqlalchemy.Integer,
-                                #sqlalchemy.ForeignKey("users.id"), index=True, nullable=False)
-    #user_to_id = sqlalchemy.Column(sqlalchemy.Integer,
-                                #sqlalchemy.ForeignKey("users.id"), index=True, nullable=False)
-    content = sqlalchemy.Column(sqlalchemy.String, nullable=False)
+    content = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    photo = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     created_date = sqlalchemy.Column(sqlalchemy.DateTime,
                                      default=datetime.datetime.now)
     user_name = sqlalchemy.Column(sqlalchemy.Integer,
