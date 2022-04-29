@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% if pos != [] %}
+    <div class="form-group">
+        <form class="login_form" method="post">
+        <div class="form-group">
+            <label for="classSelect">у вас есть переписка с</label>
+                                            <select class="form-control" id="classSelect" name="пользователь2">
+                                                {% for i in pos %}
+                                                  <option>{{i}}</option>
+                                              {% endfor %}
+                                            </select>
+                                         </div>
+        <button type="submit" class="btn btn-primary">Открыть переписку</button>
+        </form>
+    </div>
+{% else %}
+<h1>К сожалению у вас пока нет переписок</h1>
+{% endif %}
+</body>
+</html>
