@@ -237,7 +237,10 @@ def index3():
                 db_sess.add(mes)
                 db_sess.commit()
         else:
-            mes = Message(content='', photo=request.form['отправить'], user_name='Пользователь 3',
+            name = str(request.files['file']).split(':')[-1].split()[0][1:-1]
+            f = request.files['file']
+            f.save(f'static/img/{name}')
+            mes = Message(content='', photo=f'img/{name}', user_name='Пользователь 3',
                           user_to_name='Пользователь 2')
             db_sess.add(mes)
             db_sess.commit()
@@ -412,4 +415,4 @@ def registration():
 
 
 if __name__ == '__main__':
-    app.run(port=8080, host='127.0.0.1')
+    app.run(port=8090, host='127.0.0.1')
