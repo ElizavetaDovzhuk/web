@@ -10,8 +10,8 @@
 <div align="left">
         {{item.content}}
     </div>
-            {% if item.photo != ''%}
-            <h3 align="right"><img class="img-fluid w-5" src="{{url_for('static', filename='item.photo')}}"></h3>
+            {% if item.photo != None%}
+                <h3 align="right"><img class="img-fluid w-5" src="{{url_for('static', filename=item.photo)}}"></h3>
             {% endif %}
     <div></div>
     </div>
@@ -24,11 +24,10 @@
 <div align="right">
         {{item.content}}
     </div>
-    {% if item.photo != ''%}
-
+    {% if item.photo != None%}
+        <div></div>
+            <img class="img-fluid w-5" src="{{url_for('static', filename=item.photo)}}">
     {% endif %}
-    <div></div>
-            <img class="img-fluid w-5" src="{{url_for('static', filename='{{item.photo}}')}}">
     <div align="right">
         {{item.user.name}}, Дата - {{item.created_date}}
     </div>
