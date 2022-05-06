@@ -5,7 +5,7 @@
 <div align="center">Пользователь 3 - Пользователь 2</div>
 {% for item in message%}
 <div class="col-md6 border rounded">
-    {% if item.user.name  == "Пользователь 3" %}
+    {% if item.user.name  == user %}
         <div class="alert alert-warning" role="alert">
 <div align="left">
         {{item.content}}
