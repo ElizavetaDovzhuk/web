@@ -15,7 +15,8 @@ import sqlalchemy.ext.declarative as dec
 from werkzeug.security import generate_password_hash, check_password_hash
 
 SqlAlchemyBase = dec.declarative_base()
-
+username = 0
+name2 = 0
 __factory = None
 
 
@@ -115,21 +116,25 @@ class RegistrationForm(FlaskForm):
     s = ''
 
 
-@app.route("/search", methods=['POST', 'GET'])
 def search():
+    global name2
     form = Search()
     form.p = ''
     if form.validate_on_submit():
         d = form.r.data
-        print(d, 9128)
         result = []
         for us in table.query(User).all():
             result.append(us.name)
         if d not in result:
             form.p = 'Пользователя с таким именем не существует'
+            print(result)
+            return render_template('a.html', title='соцсеть.рф', form=form)
+        elif d == username:
+            form.p = 'Вы не можете вести переписку с собой'
             return render_template('a.html', title='соцсеть.рф', form=form)
         else:
-            return redirect('/message')
+            name2 = d
+            return redirect('/пользователь3')
     return render_template('a.html', title='соцсеть.рф', form=form)
 
 
@@ -298,6 +303,7 @@ flag = False
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    global username
     form = LoginForm()
     if form.validate_on_submit():
         a = form.username.data
@@ -341,12 +347,14 @@ def login():
                 s = 'Неправильно введён логин или пароль.'
                 form.s = s
                 return render_template('login.html', title='соцсеть.рф', form=form)
+        username = a
         return redirect('/search')
     return render_template('login.html', title='соцсеть.рф', form=form)
 
 
 @app.route('/registration', methods=['GET', 'POST'])
 def registration():
+    global username
     form = RegistrationForm()
     if form.validate_on_submit():
         a = form.name.data
@@ -406,6 +414,7 @@ def registration():
             user.created_date = datetime.datetime.now()
             table.add(user)
             table.commit()
+            username = a
         return redirect('/search')
     return render_template('registration.html', title='соцсеть.рф', form=form)
 
