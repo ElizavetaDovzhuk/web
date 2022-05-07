@@ -116,6 +116,7 @@ class RegistrationForm(FlaskForm):
     s = ''
 
 
+app.route("/search", methods=['POST', 'GET'])
 def search():
     global name2
     form = Search()
