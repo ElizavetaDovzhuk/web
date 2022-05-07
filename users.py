@@ -9,15 +9,6 @@ import sqlalchemy.ext.declarative as dec
 from .db_session import SqlAlchemyBase
 from sqlalchemy import orm
 
-#class User(SqlAlchemyBase):
-   # __tablename__ = 'users'
-
-   # def __repr__(self):
-      #  return f"<User> {self.id} {self.name} "\
-        # f"{self.email}"
-
-
-
 class User(SqlAlchemyBase):
      __tablename__ = 'users'
 
@@ -28,7 +19,6 @@ class User(SqlAlchemyBase):
      created_date = sa.Column(sa.DateTime, default=datetime.datetime.now)
      message = orm.relation("Message", back_populates='user')
 
-     #message = orm.relation("Message", back_populates='user')
 
      def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
