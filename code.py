@@ -13,10 +13,11 @@ import sqlalchemy.orm as orm
 from sqlalchemy.orm import Session
 import sqlalchemy.ext.declarative as dec
 from werkzeug.security import generate_password_hash, check_password_hash
+username = ''
+username2 = ''
 
 SqlAlchemyBase = dec.declarative_base()
-username = 0
-name2 = 0
+
 __factory = None
 
 
@@ -86,7 +87,7 @@ def create_session() -> Session:
     return __factory()
 
 
-global_init("users.db")
+global_init("users3.db")
 table = create_session()
 
 app = Flask(__name__)
@@ -96,7 +97,6 @@ app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 class LoginForm(FlaskForm):
     username = StringField('Логин', validators=[DataRequired()])
     password = PasswordField('Пароль', validators=[DataRequired()])
-    remember_me = BooleanField('Запомнить меня')
     submit = SubmitField('Войти')
     s = ''
 
@@ -116,160 +116,103 @@ class RegistrationForm(FlaskForm):
     s = ''
 
 
-app.route("/search", methods=['POST', 'GET'])
+@app.route('/userslist')
+def userslist():
+    result = []
+    for i in table.query(User).all():
+        result.append(i.name)
+    return render_template('userslist.html', list=result )
+
+
+@app.route("/search", methods=['POST', 'GET'])
 def search():
-    global name2
+    global username, username2
     form = Search()
     form.p = ''
     if form.validate_on_submit():
-        d = form.r.data
+        username2 = form.r.data
         result = []
         for us in table.query(User).all():
             result.append(us.name)
-        if d not in result:
+        if username2 not in result:
             form.p = 'Пользователя с таким именем не существует'
-            print(result)
             return render_template('a.html', title='соцсеть.рф', form=form)
-        elif d == username:
+        elif username2 == username:
             form.p = 'Вы не можете вести переписку с собой'
             return render_template('a.html', title='соцсеть.рф', form=form)
         else:
-            name2 = d
-            return redirect('/пользователь3')
+            print(username, username2)
+            return redirect(f'/{username}/{username2}')
     return render_template('a.html', title='соцсеть.рф', form=form)
 
 
-@app.route("/message", methods=['POST', 'GET'])
-def message():
-    pos = 3
-    global q
-    # message = db_sess.query(Message).filter(Message.user_name == "Пользователь 2", Message.user_to_name == "Пользователь 3")                                   #(Message.user_name == "Пользователь 3", Message.user_to_name == "Пользователь 2"))
-    if pos == 2:
-        if request.method == 'GET':
-            global_init("users3.db")
-            db_sess = create_session()
-            message = list(db_sess.query(Message).filter((Message.user_name.in_(['Пользователь 2', 'Пользователь 3'])),
-                                                         (Message.user_to_name.in_(['Пользователь 2', 'Пользователь 3']))))
-            lst = []
-            lst2 = []
-            for i in message:
-                lst.append(i.created_date)
-                lst2.append(i.created_date)
-            lst.sort()
-            reslst = []
-            count2 = 0
-            for i in lst:
-                count = 0
-                for q in lst2:
-                    if i == q:
-                        reslst.append(message[count])
-                    count += 1
-                count2 += 1
-            return render_template("index23.html", message=reslst)
-        elif request.method == 'POST':
-            global_init("users3.db")
-            db_sess = create_session()
-            w = str(request.form)[20:-2]
-            if "('text', '')" in w:
-                print('пустое сообщение')
-            if 'text' in w:
-                if request.form['text'] is not None:
-                    mes = Message(content=request.form['text'], photo='', user_name='Пользователь 2',
-                                  user_to_name='Пользователь 3')
-                    db_sess.add(mes)
-                    db_sess.commit()
-            else:
-                mes = Message(content='', photo=request.form['отправить'], user_name='Пользователь 3',
-                              user_to_name='Пользователь 3')
+@app.route("/<a>/<b>", methods=['POST', 'GET'])
+def index2(a, b):
+    if request.method == 'GET':
+        global_init("users3.db")
+        db_sess = create_session()
+        message = list(db_sess.query(Message).filter((Message.user_name.in_([a, b])),
+                                                     (Message.user_to_name.in_([a, b]))))
+        lst = []
+        lst2 = []
+        for i in message:
+            lst.append(i.created_date)
+            lst2.append(i.created_date)
+        lst.sort()
+        reslst = []
+        count2 = 0
+        for i in lst:
+            count = 0
+            for q in lst2:
+                if i == q:
+                    reslst.append(message[count])
+                count += 1
+            count2 += 1
+        return render_template("index23.html", message=reslst, user_name=a, user_to_name=b, stroka=f'{a}-{b}')
+    elif request.method == 'POST':
+        global_init("users3.db")
+        db_sess = create_session()
+        w = str(request.form)[20:-2]
+        if "('text', '')" in w:
+            print('пустое сообщение')
+        if 'text' in w:
+            if request.form['text'] is not None:
+                mes = Message(content=request.form['text'], photo=None, user_name=a,
+                              user_to_name=b)
                 db_sess.add(mes)
                 db_sess.commit()
-            message = list(db_sess.query(Message).filter((Message.user_name.in_(['Пользователь 2', 'Пользователь 3'])),
-                                                         (Message.user_to_name.in_(['Пользователь 2', 'Пользователь 3']))))
-            lst = []
-            lst2 = []
-            for i in message:
-                lst.append(i.created_date)
-                lst2.append(i.created_date)
-            lst.sort()
-            reslst = []
-            count2 = 0
-            for i in lst:
-                count = 0
-                for q in lst2:
-                    if i == q:
-                        reslst.append(message[count])
-                    count += 1
-                count2 += 1
-            if 'text' in w:
-                if len(request.form['text']) > 0:
-                    return render_template("index23.html", message=reslst)
-                elif len(request.form['text']) == 0:
-                    return render_template("index3.html", message='Нельзя отправить пустое сообщение')
-            else:
-                return render_template("index23.html", message=reslst)
-    else:
-        if request.method == 'GET':
-            global_init("users3.db")
-            db_sess = create_session()
-            message = list(db_sess.query(Message).filter((Message.user_name.in_(['Пользователь 2', 'Пользователь 3'])),
-                                                         (Message.user_to_name.in_(['Пользователь 2', 'Пользователь 3']))))
-            lst = []
-            lst2 = []
-            for i in message:
-                lst.append(i.created_date)
-                lst2.append(i.created_date)
-            lst.sort()
-            reslst = []
-            count2 = 0
-            for i in lst:
-                count = 0
-                for q in lst2:
-                    if i == q:
-                        reslst.append(message[count])
-                    count += 1
-                count2 += 1
-            return render_template("index2.html", message=reslst)
-        elif request.method == 'POST':
-            global_init("users.db")
-            db_sess = create_session()
-            w = str(request.form)[20:-2]
-            if "('text', '')" in w:
-                print('пустое сообщение')
-            if 'text' in w:
-                if request.form['text'] is not None:
-                    mes = Message(content=request.form['text'], photo='', user_name='Пользователь 3',
-                                  user_to_name='Пользователь 2')
-                    db_sess.add(mes)
-                    db_sess.commit()
-            else:
-                mes = Message(content='', photo=request.form['отправить'], user_name='Пользователь 3',
-                              user_to_name='Пользователь 2')
-                db_sess.add(mes)
-                db_sess.commit()
-            message = list(db_sess.query(Message).filter((Message.user_name.in_(['Пользователь 2', 'Пользователь 3'])),
-                                                         (Message.user_to_name.in_(['Пользователь 2', 'Пользователь 3']))))
-            lst = []
-            lst2 = []
-            for i in message:
-                lst.append(i.created_date)
-                lst2.append(i.created_date)
-            lst.sort()
-            reslst = []
-            count2 = 0
-            for i in lst:
-                count = 0
-                for q in lst2:
-                    if i == q:
-                        reslst.append(message[count])
-                    count += 1
-                count2 += 1
-            if 'text' in w:
-                if len(request.form['text']) > 0:
-                    return render_template("index2.html", message=reslst)
-                elif len(request.form['text']) == 0:
-                    return render_template("index3.html", message='Нельзя отправить пустое сообщение')
-            else:
-                return render_template("index2.html", message=reslst)
+        else:
+            name = str(request.files['file']).split(':')[-1].split()[0][1:-1]
+            f = request.files['file']
+            f.save(f'static/img/{name}')
+            mes = Message(content='', photo=f'img/{name}', user_name=a,
+                          user_to_name=b)
+            db_sess.add(mes)
+            db_sess.commit()
+        message = list(db_sess.query(Message).filter((Message.user_name.in_([a, b])),
+                                                     (Message.user_to_name.in_([a, b]))))
+        lst = []
+        lst2 = []
+        for i in message:
+            lst.append(i.created_date)
+            lst2.append(i.created_date)
+        lst.sort()
+        reslst = []
+        count2 = 0
+        for i in lst:
+            count = 0
+            for q in lst2:
+                if i == q:
+                    reslst.append(message[count])
+                count += 1
+            count2 += 1
+        if 'text' in w:
+            if len(request.form['text']) > 0:
+                return render_template("index23.html", message=reslst, user_name=a, user_to_name=b, stroka=f'{a}-{b}')
+            elif len(request.form['text']) == 0:
+                return render_template("index3.html", message='Нельзя отправить пустое сообщение')
+        else:
+            return render_template("index23.html", message=reslst, user_name=a, user_to_name=b, stroka=f'{a}-{b}')
 
 
 @app.route('/')
@@ -286,7 +229,6 @@ def start():
                         <title>соцсеть.рф</title>
                       </head>
                       <body>
-                        <h1 align=center>Добро пожаловать!</h1>
                         <style>
                         a {text-align: center;}
                         </style>
@@ -355,7 +297,6 @@ def login():
 
 @app.route('/registration', methods=['GET', 'POST'])
 def registration():
-    global username
     form = RegistrationForm()
     if form.validate_on_submit():
         a = form.name.data
@@ -415,6 +356,7 @@ def registration():
             user.created_date = datetime.datetime.now()
             table.add(user)
             table.commit()
+            global username
             username = a
         return redirect('/search')
     return render_template('registration.html', title='соцсеть.рф', form=form)
