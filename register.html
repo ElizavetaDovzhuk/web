@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="form-group">
+    <form class="login_form" method="post">
+    <div class="form-group">
+        <label for="classSelect">Выберите пользователя</label>
+                                        <select class="form-control" id="classSelect" name="пользователь">
+                                          {% for i in pos %}
+                                                  <option>{{i}}</option>
+                                              {% endfor %}
+                                        </select>
+                                     </div>
+    <button type="submit" class="btn btn-primary">Войти</button>
+    </form>
+</div>
+</body>
+</html>

@@ -1,17 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
+<a href="http://127.0.0.1:8080/search" class="alert-link">Открыть выбор чата</a>
 <h1 align="center">Сообщения</h1>
-<div align="center">Пользователь 3 - Пользователь 2</div>
+<h1 align="center">{{stroka}}</h1>
+<a href="#myDiv">вниз</a>
 {% for item in message%}
 <div class="col-md6 border rounded">
-    {% if item.user.name  == "Пользователь 3" %}
+    {% if item.user.name == user_to_name %}
         <div class="alert alert-warning" role="alert">
 <div align="left">
         {{item.content}}
     </div>
-            {% if item.photo != ''%}
-            <h3 align="right"><img class="img-fluid w-5" src="{{url_for('static', filename='item.photo')}}"></h3>
+            {% if item.photo != None%}
+                <h3 align="left"><img class="img-fluid w-5" src="{{url_for('static', filename=item.photo)}}"></h3>
             {% endif %}
     <div></div>
     </div>
@@ -24,11 +26,10 @@
 <div align="right">
         {{item.content}}
     </div>
-    {% if item.photo != ''%}
-
+    {% if item.photo != None%}
+        <div></div>
+           <h3 align="right"><img class="img-fluid w-5" src="{{url_for('static', filename=item.photo)}}"></h3>
     {% endif %}
-    <div></div>
-            <img class="img-fluid w-5" src="{{url_for('static', filename='{{item.photo}}')}}">
     <div align="right">
         {{item.user.name}}, Дата - {{item.created_date}}
     </div>
@@ -36,7 +37,6 @@
  {% endif %}
 
 {% endfor %}
-<div>пользователь 2 пользователю 3</div>
 <form class="login_form" method="post">
     <input type="text" class="form-control" id="text" placeholder="Введите текст" name="text">
 </form>
@@ -47,4 +47,6 @@
     <button name="отправить" type="submit" class="btn btn-primary">Отправить файл</button>
 </div>
 </form>
+<div id="myDiv"></div>
 {% endblock %}
+
